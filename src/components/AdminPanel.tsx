@@ -385,7 +385,6 @@ export function AdminPanel() {
                       <div key={j.email} className="rounded-lg bg-secondary/30 px-3 py-1.5 text-xs flex items-center gap-2">
                         <Users className="h-3 w-3 text-muted-foreground" />
                         <span className="font-medium text-foreground">{j.name}</span>
-                        <span className="text-muted-foreground flex-1">{j.email}</span>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -456,7 +455,6 @@ export function AdminPanel() {
                 <div key={j.email} className="rounded-lg bg-secondary/30 px-3 py-1.5 text-xs flex items-center gap-2">
                   <Users className="h-3 w-3 text-primary" />
                   <span className="font-medium text-foreground">{j.name}</span>
-                  <span className="text-muted-foreground flex-1">{j.email}</span>
                   <button
                     onClick={async () => {
                       if (confirm(`Remove ${j.name} from this round?`)) {
@@ -487,7 +485,6 @@ export function AdminPanel() {
                   <div key={j.email} className="rounded-lg bg-secondary/20 px-3 py-1.5 text-xs flex items-center gap-2">
                     <Gavel className="h-3 w-3 text-muted-foreground" />
                     <span className="font-medium text-foreground">{j.name}</span>
-                    <span className="text-muted-foreground flex-1">{j.email}</span>
                     {isInRound ? (
                       <span className="text-[10px] text-primary font-medium">In round</span>
                     ) : (
@@ -554,7 +551,7 @@ export function AdminPanel() {
           const pairGroups = new Map<string, { judges: string[]; teams: number[] }>();
           byTeam.forEach((assigns, teamNum) => {
             const key = assigns.map(a => a.judgeEmail).sort().join('|');
-            const existing = pairGroups.get(key) || { judges: assigns.map(a => `${a.judgeName} (${a.judgeEmail})`), teams: [] };
+            const existing = pairGroups.get(key) || { judges: assigns.map(a => a.judgeName), teams: [] };
             existing.teams.push(teamNum);
             pairGroups.set(key, existing);
           });
