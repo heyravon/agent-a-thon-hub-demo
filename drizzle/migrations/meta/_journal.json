@@ -8,6 +8,13 @@
       "when": 1794882261812,
       "tag": "0000_demo_public_read_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794882446267,
+      "tag": "0001_hide_judge_emails_from_public",
+      "breakpoints": true
     }
   ]
 }

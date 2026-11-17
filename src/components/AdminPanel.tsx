@@ -35,8 +35,8 @@ export function AdminPanel() {
   // Fetch all historical judges from DB on mount
   useEffect(() => {
     const fetchHistorical = async () => {
-      const { data } = await supabase.from('judges').select('name, email').order('name');
-      if (data) setHistoricalJudges(data.map(j => ({ name: j.name, email: j.email })));
+      const { data } = await supabase.from('judges').select('name').order('name');
+      if (data) setHistoricalJudges(data.map(j => ({ name: j.name, email: j.name })));
     };
     fetchHistorical();
   }, []);

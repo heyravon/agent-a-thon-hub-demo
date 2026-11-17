@@ -74,21 +74,21 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
 
   // Helper to refresh assignments from DB
   const refreshAssignments = useCallback(async () => {
-    const { data } = await supabase.from('judge_assignments').select('*');
+    const { data } = await supabase.from('judge_assignments').select('id, judge_name, team_number, round, created_at');
     if (data) {
       setAssignments(data.map(a => ({
-        id: a.id, judgeEmail: a.judge_email, judgeName: a.judge_name,
+        id: a.id, judgeEmail: a.judge_name, judgeName: a.judge_name,
         teamNumber: a.team_number, round: a.round as Round,
       })));
     }
   }, []);
 
   // Get judge pairs from assignments
-  const getJudgePairs = useCallback((roundAssignments: { judge_email: string; judge_name: string; team_number: number }[]) => {
+  const getJudgePairs = useCallback((roundAssignments: { judge_name: string; team_number: number }[]) => {
     const teamJudges = new Map<number, Set<string>>();
     roundAssignments.forEach(a => {
       const s = teamJudges.get(a.team_number) || new Set();
-      s.add(a.judge_email);
+      s.add(a.judge_name);
       teamJudges.set(a.team_number, s);
     });
     const pairMap = new Map<string, { emails: string[]; teams: number[] }>();
@@ -104,13 +104,13 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
   const autoAssignJudge = useCallback(async (j: Judge) => {
     const { data: roundAssignments } = await supabase
       .from('judge_assignments')
-      .select('*')
+      .select('id, judge_name, team_number, round, created_at')
       .eq('round', config.activeRound);
 
     if (!roundAssignments || roundAssignments.length === 0) return;
 
     const email = j.email.toLowerCase();
-    const alreadyAssigned = roundAssignments.some(a => a.judge_email === email);
+    const alreadyAssigned = roundAssignments.some(a => a.judge_name === email);
     if (alreadyAssigned) return;
 
     const isFinal = FINAL_ROUNDS.includes(config.activeRound);
@@ -129,7 +129,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
       const teamJudgeCounts = new Map<number, string[]>();
       roundAssignments.forEach(a => {
         const judges = teamJudgeCounts.get(a.team_number) || [];
-        judges.push(a.judge_email);
+        judges.push(a.judge_name);
         teamJudgeCounts.set(a.team_number, judges);
       });
 
@@ -156,7 +156,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
   const autoAssignTeamToJudges = useCallback(async (teamNumber: number) => {
     const { data: roundAssignments } = await supabase
       .from('judge_assignments')
-      .select('*')
+      .select('id, judge_name, team_number, round, created_at')
       .eq('round', config.activeRound);
 
     if (!roundAssignments || roundAssignments.length === 0) return;
@@ -164,7 +164,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
     const isFinal = FINAL_ROUNDS.includes(config.activeRound);
     if (isFinal) {
       const uniqueJudges = new Map<string, string>();
-      roundAssignments.forEach(a => uniqueJudges.set(a.judge_email, a.judge_name));
+      roundAssignments.forEach(a => uniqueJudges.set(a.judge_name, a.judge_name));
       const newAssignments = Array.from(uniqueJudges.entries()).map(([je, jn]) => ({
         judge_email: je, judge_name: jn,
         team_number: teamNumber, round: config.activeRound,
@@ -178,7 +178,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
       pairs.sort((a, b) => a.teams.length - b.teams.length);
       const leastBusyPair = pairs[0];
       const judgeNames = new Map<string, string>();
-      roundAssignments.forEach(a => judgeNames.set(a.judge_email, a.judge_name));
+      roundAssignments.forEach(a => judgeNames.set(a.judge_name, a.judge_name));
       const newAssignments = leastBusyPair.emails.map(je => ({
         judge_email: je, judge_name: judgeNames.get(je) || je,
         team_number: teamNumber, round: config.activeRound,
@@ -205,9 +205,9 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       const [teamsRes, scoresRes, configRes, assignRes] = await Promise.all([
         supabase.from('teams').select('*').order('team_number'),
-        supabase.from('scores').select('*'),
+        supabase.from('scores').select('id, judge_name, team_number, round, category_scores, total_score, created_at'),
         supabase.from('app_config').select('*').eq('id', 1).single(),
-        supabase.from('judge_assignments').select('*'),
+        supabase.from('judge_assignments').select('id, judge_name, team_number, round, created_at'),
       ]);
 
       if (teamsRes.data) {
@@ -228,7 +228,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
         setScores(scoresRes.data.map(s => ({
           id: s.id,
           judgeName: s.judge_name,
-          judgeEmail: s.judge_email,
+          judgeEmail: s.judge_name,
           teamNumber: s.team_number,
           round: s.round as Round,
           categoryScores: (s.category_scores as any[]) || [],
@@ -239,7 +239,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
 
       if (assignRes.data) {
         setAssignments(assignRes.data.map(a => ({
-          id: a.id, judgeEmail: a.judge_email, judgeName: a.judge_name,
+          id: a.id, judgeEmail: a.judge_name, judgeName: a.judge_name,
           teamNumber: a.team_number, round: a.round as Round,
         })));
       }
@@ -275,9 +275,9 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
 
     const scoresChannel = supabase.channel('scores-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, () => {
-        supabase.from('scores').select('*').then(({ data }) => {
+        supabase.from('scores').select('id, judge_name, team_number, round, category_scores, total_score, created_at').then(({ data }) => {
           if (data) setScores(data.map(s => ({
-            id: s.id, judgeName: s.judge_name, judgeEmail: s.judge_email,
+            id: s.id, judgeName: s.judge_name, judgeEmail: s.judge_name,
             teamNumber: s.team_number, round: s.round as Round,
             categoryScores: (s.category_scores as any[]) || [],
             totalScore: s.total_score, timestamp: s.created_at,
@@ -298,9 +298,9 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
 
     const assignChannel = supabase.channel('assign-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'judge_assignments' }, () => {
-        supabase.from('judge_assignments').select('*').then(({ data }) => {
+        supabase.from('judge_assignments').select('id, judge_name, team_number, round, created_at').then(({ data }) => {
           if (data) setAssignments(data.map(a => ({
-            id: a.id, judgeEmail: a.judge_email, judgeName: a.judge_name,
+            id: a.id, judgeEmail: a.judge_name, judgeName: a.judge_name,
             teamNumber: a.team_number, round: a.round as Round,
           })));
         });
@@ -329,7 +329,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
       setScores(prev => {
         const idx = prev.findIndex(s => s.judgeEmail === entry.judgeEmail && s.teamNumber === entry.teamNumber && s.round === entry.round);
         const newEntry: ScoreEntry = {
-          id: data.id, judgeName: data.judge_name, judgeEmail: data.judge_email,
+          id: data.id, judgeName: data.judge_name, judgeEmail: data.judge_name,
           teamNumber: data.team_number, round: data.round as Round,
           categoryScores: (data.category_scores as any[]) || [],
           totalScore: data.total_score, timestamp: data.created_at,
@@ -509,7 +509,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
     }).select().single();
     if (error) throw error;
     setAssignments(prev => [...prev, {
-      id: data.id, judgeEmail: data.judge_email, judgeName: data.judge_name,
+      id: data.id, judgeEmail: data.judge_name, judgeName: data.judge_name,
       teamNumber: data.team_number, round: data.round as Round,
     }]);
   }, [allTeams]);
@@ -601,7 +601,7 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
     setAssignments(prev => [
       ...prev.filter(a => a.round !== round),
-      ...newAssignments.map(a => ({ id: '', judgeEmail: a.judge_email, judgeName: a.judge_name, teamNumber: a.team_number, round: round as Round })),
+      ...newAssignments.map(a => ({ id: '', judgeEmail: a.judge_name, judgeName: a.judge_name, teamNumber: a.team_number, round: round as Round })),
     ]);
   }, [allTeams, getLeaderboard]);
 
