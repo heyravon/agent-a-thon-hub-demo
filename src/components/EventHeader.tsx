@@ -1,6 +1,6 @@
 import { useJudging } from '@/context/JudgingContext';
 import { ROUND_LABELS } from '@/types/judging';
-import { MicrosoftLogo } from '@/components/MicrosoftLogo';
+import { AppLogo } from '@/components/AppLogo';
 import { Users } from 'lucide-react';
 
 export function EventHeader() {
@@ -12,7 +12,7 @@ export function EventHeader() {
       <div className="mx-auto max-w-5xl px-4 py-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
-            <MicrosoftLogo size={22} />
+            <AppLogo size={22} />
             <div>
               <h1 className="text-base font-semibold leading-tight text-foreground sm:text-lg">
                 Agent-a-Thon

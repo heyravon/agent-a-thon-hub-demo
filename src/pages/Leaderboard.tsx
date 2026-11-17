@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useJudging } from '@/context/JudgingContext';
-import { MicrosoftLogo } from '@/components/MicrosoftLogo';
+import { AppLogo } from '@/components/AppLogo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ROUND_LABELS, JUDGING_CATEGORIES, Round, ADVANCEMENT_MAP, PRIMARY_ROUNDS, FINAL_ROUNDS, FINALISTS_COUNT, TEST_ROUNDS, OFFICIAL_ROUNDS } from '@/types/judging';
@@ -52,7 +52,7 @@ export default function LeaderboardPage() {
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <MicrosoftLogo size={28} />
+            <AppLogo size={28} />
             <div>
               <h1 className="text-sm font-bold text-foreground leading-tight">Agent-a-Thon</h1>
               <p className="text-[11px] text-muted-foreground">Leaderboard & Scores</p>

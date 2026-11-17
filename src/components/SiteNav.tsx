@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Users, Trophy, BookOpen, FlaskConical, MessageSquareHeart, Image as ImageIcon, Home } from 'lucide-react';
-import { MicrosoftLogo } from '@/components/MicrosoftLogo';
+import { AppLogo } from '@/components/AppLogo';
 import { cn } from '@/lib/utils';
 
 type NavItem = {
@@ -75,7 +75,7 @@ export function SiteNav() {
       <header className="sticky top-0 z-40 hidden w-full border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:block">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-5 sm:px-8">
           <Link to="/" className="group flex items-center gap-2.5">
-            <MicrosoftLogo size={22} />
+            <AppLogo size={22} />
             <span className="text-sm font-semibold tracking-tight text-foreground">
               Agent-a-Thon
             </span>

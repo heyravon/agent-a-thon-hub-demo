@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { Judge, ScoreEntry, Round, AppConfig, TeamRanking, CategoryScore, JUDGING_CATEGORIES, Team, PRIMARY_ROUNDS, FINAL_ROUNDS, ADVANCEMENT_MAP, FINALISTS_COUNT, getRoundGroup } from '@/types/judging';
 import { supabase } from '@/integrations/supabase/client';
+import { demoNotice, DEMO_NOTICE } from '@/lib/demo';
 
 export interface JudgeAssignment {
   id: string;
@@ -191,12 +192,6 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
   const setJudge = useCallback((j: Judge | null) => {
     setJudgeState(j);
     localStorage.setItem('judge', JSON.stringify(j));
-    if (j) {
-      supabase.from('judges').upsert(
-        { name: j.name, email: j.email.toLowerCase() },
-        { onConflict: 'email' }
-      );
-    }
   }, []);
 
   const setCurrentRound = useCallback((r: Round) => {
@@ -657,16 +652,20 @@ export function JudgingProvider({ children }: { children: React.ReactNode }) {
   }, [shouldRenumber, displayNumberMap]);
 
 
+  // Demo build: the database is read-only for visitors, so every write shows a note instead.
+  const noop = async (..._args: unknown[]) => { demoNotice(); };
+  const demoRegisterTeam = async (): Promise<Team> => { throw new Error(DEMO_NOTICE); };
+
   return (
     <JudgingContext.Provider value={{
       judge, setJudge, currentRound, setCurrentRound,
-      scores, saveScore, getScoreForTeam, getScoredTeams,
-      getLeaderboard, config, updateConfig, getAllScores: () => scores,
-      resetRoundScores, isAdmin, setIsAdmin,
-      teams, allTeams, registerTeam, getTeam, updateTeam, deleteTeam,
-      teamSubmissionsLocked, setTeamSubmissionsLocked, loading,
-      assignments, generateAssignments, clearAssignments, getAssignedTeams, getJudgePartner,
-      getKnownJudges, getAllHistoricalJudges, addJudgeToRound, removeJudgeFromRound, getTeamJudges, getDisplayTeamNumber, shouldRenumber, reassignJudge, unassignJudgeFromTeam,
+      scores, saveScore: noop, getScoreForTeam, getScoredTeams,
+      getLeaderboard, config, updateConfig: noop, getAllScores: () => scores,
+      resetRoundScores: noop, isAdmin, setIsAdmin,
+      teams, allTeams, registerTeam: demoRegisterTeam, getTeam, updateTeam: noop, deleteTeam: noop,
+      teamSubmissionsLocked, setTeamSubmissionsLocked: noop, loading,
+      assignments, generateAssignments: noop, clearAssignments: noop, getAssignedTeams, getJudgePartner,
+      getKnownJudges, getAllHistoricalJudges, addJudgeToRound: noop, removeJudgeFromRound: noop, getTeamJudges, getDisplayTeamNumber, shouldRenumber, reassignJudge: noop, unassignJudgeFromTeam: noop,
     }}>
       {children}
     </JudgingContext.Provider>

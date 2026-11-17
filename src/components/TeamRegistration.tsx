@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useJudging } from '@/context/JudgingContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MicrosoftLogo } from '@/components/MicrosoftLogo';
+import { AppLogo } from '@/components/AppLogo';
 import { InstructionsPanel } from '@/components/InstructionsPanel';
 import { toast } from 'sonner';
 import {
@@ -139,7 +139,7 @@ export function TeamRegistration() {
       <div className="min-h-svh bg-background">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
-            <MicrosoftLogo size={40} />
+            <AppLogo size={40} />
             <h1 className="mt-4 text-2xl font-bold text-foreground">Registration Closed</h1>
             {!shouldRenumber && <p className="mt-2 text-sm text-muted-foreground">Team submissions have been locked. {teams.length} teams registered.</p>}
           </motion.div>
@@ -182,7 +182,7 @@ export function TeamRegistration() {
       <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <MicrosoftLogo size={28} />
+            <AppLogo size={28} />
             <div>
               <h1 className="text-sm font-bold text-foreground leading-tight">Agent-a-Thon</h1>
               <p className="text-[11px] text-muted-foreground">Build AI Agents in Copilot Studio</p>

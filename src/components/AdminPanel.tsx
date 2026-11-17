@@ -6,6 +6,7 @@ import { Judge } from '@/types/judging';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { csvCell } from '@/lib/demo';
 import { Pencil, Trash2, Lock, Unlock, Users, ChevronDown, ChevronUp, Eye, Radio, Trophy, Shuffle, Plus, BarChart3, Download, Gavel, Activity } from 'lucide-react';
 
 export function AdminPanel() {
@@ -103,7 +104,7 @@ export function AdminPanel() {
       }),
       String(s.totalScore), s.timestamp,
     ]);
-    const csv = [header, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const csv = [header, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -119,7 +120,7 @@ export function AdminPanel() {
     const rows = teams.map(t => [
       String(getDisplayTeamNumber(t.teamNumber)), t.teamName, t.projectName, t.description, t.members.join('; '), t.submittedAt,
     ]);
-    const csv = [header, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const csv = [header, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

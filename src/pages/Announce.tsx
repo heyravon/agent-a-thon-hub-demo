@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useJudging } from '@/context/JudgingContext';
 import { ROUND_LABELS, FINAL_ROUNDS, ADVANCEMENT_MAP, PRIMARY_ROUNDS, Round } from '@/types/judging';
-import { MicrosoftLogo } from '@/components/MicrosoftLogo';
+import { AppLogo } from '@/components/AppLogo';
 import { Trophy, ChevronRight, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -75,7 +75,7 @@ export default function AnnouncePage() {
       {/* Controls bar */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <MicrosoftLogo size={28} />
+          <AppLogo size={28} />
           <div>
             <h1 className="text-sm font-bold text-foreground">Winner Announcement</h1>
             <p className="text-[11px] text-muted-foreground">{ROUND_LABELS[displayRound]}</p>

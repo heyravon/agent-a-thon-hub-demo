@@ -1,3 +1,4 @@
+import { demoNotice } from '@/lib/demo';
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -34,8 +35,9 @@ export default function Gallery() {
 
   const deleteMutation = useMutation({
     mutationFn: async (name: string) => {
-      const { error } = await supabase.storage.from(BUCKET).remove([name]);
-      if (error) throw error;
+      void name;
+      demoNotice();
+      throw new Error('demo');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["event-photos"] });
@@ -48,6 +50,9 @@ export default function Gallery() {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || []);
       if (!files.length) return;
+      demoNotice();
+      e.target.value = '';
+      return;
 
       setUploading(true);
       setProgress(0);

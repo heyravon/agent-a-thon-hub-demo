@@ -1,0 +1,1 @@
+GRANT SELECT ON public.scores, public.judge_assignments, public.judges, public.teams, public.app_config TO anon, authenticated;

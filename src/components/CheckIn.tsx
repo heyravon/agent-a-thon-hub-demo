@@ -1,3 +1,4 @@
+import { demoNotice } from '@/lib/demo';
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -32,7 +33,7 @@ export default function CheckIn() {
       .select('*')
       .order('name');
     if (error) {
-      toast.error('Failed to load attendees');
+      // Demo build: attendee details stay private, so the list may be empty.
     } else {
       setAttendees(data || []);
     }
@@ -92,12 +93,12 @@ export default function CheckIn() {
           organization: orgCol ? r[orgCol]?.toString().trim() || null : null,
         }));
 
-      // Clear existing and insert new
-      await supabase.from('attendees').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      const { error } = await supabase.from('attendees').insert(records);
+      // Demo build: nothing is written to the database.
+      demoNotice();
+      const error = true;
 
       if (error) {
-        toast.error('Failed to import attendees');
+        // demo note already shown
       } else {
         toast.success(`Imported ${records.length} attendees`);
         fetchAttendees();
@@ -109,7 +110,10 @@ export default function CheckIn() {
     e.target.value = '';
   };
 
-  const toggleCheckIn = async (attendee: Attendee) => {
+  const toggleCheckIn = async (_attendee: Attendee) => {
+    demoNotice();
+    return;
+    const attendee = _attendee;
     const newCheckedIn = !attendee.checked_in;
     const { error } = await supabase
       .from('attendees')
@@ -127,7 +131,8 @@ export default function CheckIn() {
   };
 
   const clearAll = async () => {
-    if (!confirm('Delete all attendees? This cannot be undone.')) return;
+    demoNotice();
+    return;
     await supabase.from('attendees').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     fetchAttendees();
     toast.success('Cleared all attendees');

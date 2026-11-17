@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { MicrosoftLogo } from '@/components/MicrosoftLogo';
+import { AppLogo } from '@/components/AppLogo';
 import { StatCounter } from '@/components/StatCounter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -29,9 +29,6 @@ const EVENT_DATE = 'Saturday, March 21, 2026';
 const EVENT_TIME = '9:00 AM – 4:00 PM EST';
 const EVENT_VENUE = 'Renaissance Baltimore Harborplace';
 const GRAND_PRIZE = 'Laptops';
-const TOTAL_ATTENDEE_CAP = 130;
-// Final checked-in headcount for the event
-const CHECKED_IN_TOTAL = 100;
 // Only count teams that participated on event day (March 21, 2026 EST)
 const EVENT_DAY_START = '2026-03-21T00:00:00-05:00';
 const EVENT_DAY_END = '2026-03-22T00:00:00-05:00';
@@ -151,7 +148,7 @@ export default function Index() {
             transition={{ duration: 0.5 }}
             className="mt-6 flex justify-center"
           >
-            <MicrosoftLogo size={56} />
+            <AppLogo size={56} />
           </motion.div>
 
           <motion.h1
@@ -234,13 +231,8 @@ export default function Index() {
               accent="ms-blue"
             />
             <StatBlock
-              label="Attendees Checked In"
-              value={
-                <>
-                  <StatCounter to={CHECKED_IN_TOTAL} />
-                  <span className="text-xl text-muted-foreground"> / {TOTAL_ATTENDEE_CAP}</span>
-                </>
-              }
+              label="Scoring Categories"
+              value={<StatCounter to={6} />}
               accent="ms-green"
             />
             <StatBlock
@@ -317,8 +309,8 @@ export default function Index() {
         {/* FOOTER */}
         <footer className="mt-24 border-t border-border pt-8 text-center">
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-            <MicrosoftLogo size={14} />
-            <span>Created by HeyRavon.ai · Hosted by NSBE</span>
+            <AppLogo size={14} />
+            <span>Demo with sample data. Created by HeyRavon.ai.</span>
           </div>
           <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
             <span>© 2026 Agent-a-Thon</span>
